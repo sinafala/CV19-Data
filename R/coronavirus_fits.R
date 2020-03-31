@@ -12,8 +12,7 @@ rm(list=ls())
 #### Packages ####
 
 list.of.packages <- c(
-  "readr",
-  "minpack.lm"
+  "readr"
 )
 
 # identify required packages that are not already installed
@@ -273,12 +272,12 @@ points(jh.us.case.daily$days, jh.us.case.daily$cases, pch=20, cex=1.5)
 rm(list=c('a','b','c','x.pred','y.pred'))
 
 # residual comparisons: exponential model / logistic model
-# deaths, not much difference >> still likely in exponential phase
-sum(abs(tp.expMod.death$residuals))/sum(abs(jh.logMod.death$residuals))
-sum(abs(tp.expMod.death$residuals))
+# deaths
+sum(abs(jh.expMod.death$residuals))/sum(abs(jh.logMod.death$residuals))
+sum(abs(jh.expMod.death$residuals))
 sum(abs(jh.logMod.death$residuals))
-# cases, logistic is better >> maybe not exponential anymore 
-sum(abs(tp.expMod.case$residuals))/sum(abs(jh.logMod.case$residuals))
-sum(abs(tp.expMod.case$residuals))
+# cases
+sum(abs(jh.expMod.case$residuals))/sum(abs(jh.logMod.case$residuals))
+sum(abs(jh.expMod.case$residuals))
 sum(abs(jh.logMod.case$residuals))
 
