@@ -2,7 +2,8 @@
 # Exponential and Logistic Fits for Coronavirus Deaths and Cases
 # Sam Clark
 # 2020-03-28
-# 2020-03-29 - latest
+# 2020-03-29 
+# 2020-03-31 - latest
 
 
 #### Start up ####
