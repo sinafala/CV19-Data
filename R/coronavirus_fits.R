@@ -3,7 +3,8 @@
 # Sam Clark
 # 2020-03-28
 # 2020-03-29 
-# 2020-03-31 - latest
+# 2020-03-31 
+# 2020-04-05- latest
 
 
 #### Start up ####
@@ -14,6 +15,7 @@ rm(list=ls())
 
 list.of.packages <- c(
   "readr"
+  ,"lubridate"
 )
 
 # identify required packages that are not already installed
@@ -43,19 +45,25 @@ write_csv(tp.us.daily.basic, sprintf("./Data/tp_covid19_data_%s.csv", Sys.Date()
 # deaths
 tp.us.death.daily <- tp.us.daily[,c('date','death')] # grab only date and deaths
 tp.us.death.daily <- tp.us.death.daily[!is.na(tp.us.death.daily$death),] # remove rows with deaths=NA
-tp.us.death.daily <- cbind(tp.us.death.daily[,1],(tp.us.death.daily$date-min(tp.us.death.daily$date)),tp.us.death.daily[,2]) # create a field for days since first deaths
+# tp.us.death.daily <- cbind(tp.us.death.daily[,1],(tp.us.death.daily$date-min(tp.us.death.daily$date)),tp.us.death.daily[,2]) # create a field for days since first deaths
+tp.us.death.daily <- cbind(tp.us.death.daily[,1]
+                           ,as.numeric(as.Date(as.character(tp.us.death.daily$date),format="%Y%m%d")-min(as.Date(as.character(tp.us.death.daily$date),format="%Y%m%d")))
+                           ,tp.us.death.daily[,2]) # create a field for days since first deaths
 colnames(tp.us.death.daily) <- c('date','days','deaths')
 head(tp.us.death.daily) # have a look
 
 # cases
 tp.us.case.daily <- tp.us.daily[,c('date','positive')] # grab only date and cases
 tp.us.case.daily <- tp.us.case.daily[!is.na(tp.us.case.daily$positive),] # remove rows with cases=NA
-tp.us.case.daily <- cbind(tp.us.case.daily[,1],(tp.us.case.daily$date-min(tp.us.case.daily$date)),tp.us.case.daily[,2]) # create a field for days since first cases
+tp.us.case.daily <- cbind(tp.us.case.daily[,1]
+                          ,as.numeric(as.Date(as.character(tp.us.death.daily$date),format="%Y%m%d")-min(as.Date(as.character(tp.us.death.daily$date),format="%Y%m%d")))
+                          ,tp.us.case.daily[,2]) # create a field for days since first cases
 colnames(tp.us.case.daily) <- c('date','days','cases')
 head(tp.us.case.daily) # have a look
 
 # data from Johns Hopkins via R script 'get_coronavirus_data.R'
-jh.cv19 <- read_csv("./Data/jh_covid19_data_2020-03-29.csv")
+file <- sprintf("./Data/jh_covid19_data_%s.csv", Sys.Date())
+jh.cv19 <- read_csv(file)
 # View(jh.cv19)
 
 # prepare JH data
@@ -84,7 +92,7 @@ expFit <- function (data.df,y.var,x.var) {
   # exponential model: y = ae^(bx) + c  >>  log(y-c) = log(a) + bx 
   
   # select an approximate c, since c must be lower than min(y), and greater than zero
-  c.0 <- min(y) * 0.5  
+  c.0 <- min(y) * 0.5
   
   # estimate the rest parameters using a linear model
   model.0 <- lm(log(y - c.0) ~ x)  
@@ -93,10 +101,10 @@ expFit <- function (data.df,y.var,x.var) {
   
   # starting parameters
   start <- list(a = a.0, b = b.0, c = c.0)
-  
+
   # run the model
   model <- nls(y ~ a * exp(b * x) + c, start = start)
-  
+
   # parameters
   coeffs <- summary(model)$coefficients
   a.est <- coeffs[1,1]
@@ -166,7 +174,7 @@ logFit <- function (data.df,y.var,x.var) {
 
 
 #### exponential fits of deaths and cases ####
- 
+
 # TP data
 # deaths
 tp.expMod.death <- expFit(tp.us.death.daily,'deaths','days')
