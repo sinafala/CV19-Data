@@ -7,7 +7,8 @@
 # 2020-04-05
 # 2020-04-12 
 # 2020-04-14
-# 2020-04-15 - latest
+# 2020-04-15
+# 2020-04-17 - latest
 
 
 #### Start up ####
@@ -106,7 +107,7 @@ expFit <- function (data.df,y.var,x.var) {
   start <- list(a = a.0, b = b.0, c = c.0)
 
   # run the model
-  model <- nls(y ~ a * exp(b * x) + c, start = start)
+  model <- nls(y ~ a * exp(b * x) + c, start = start, control = list(maxiter = 500))
 
   # parameters
   coeffs <- summary(model)$coefficients
@@ -147,7 +148,7 @@ logFit <- function (data.df,y.var,x.var) {
 
   # fit model
   # at this point we know reasonable starting values, given that we are before the inflection point in the epidemic
-  model <- nls(y ~ SSlogis(x, a, b, c), start = c(a=2*max(y), b = max(x), c = 1))
+  model <- nls(y ~ SSlogis(x, a, b, c), start = c(a=2*max(y), b = max(x), c = 1), control = list(maxiter = 500))
   
   # parameters
   coeffs <- summary(model)$coefficients
