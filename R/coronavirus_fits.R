@@ -8,7 +8,8 @@
 # 2020-04-12 
 # 2020-04-14
 # 2020-04-15
-# 2020-04-17 - latest
+# 2020-04-17 
+# 2020-04-19 - latest
 
 
 #### Start up ####
@@ -97,6 +98,9 @@ expFit <- function (data.df,y.var,x.var) {
   
   # select an approximate c, since c must be lower than min(y), and greater than zero
   c.0 <- min(y) * 0.5
+  
+  # replace any zeroes in y.var with min(y)
+  y[y==0] <- 1e-6
   
   # estimate the rest parameters using a linear model
   model.0 <- lm(log(y - c.0) ~ x)  
